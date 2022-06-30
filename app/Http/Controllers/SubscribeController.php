@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Subscribe;
 use App\Models\Subscribe as ModelsSubscribe;
-use Illuminate\Http\Request;
 
 
 class SubscribeController extends Controller
