@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SubscribeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,10 +25,8 @@ Route::get('/', function(){
 });
 
 Route::post('/register',[AuthController::class,'register']);
-Route::post('/update-profile', [AuthController::class,'updateProfile']);
+Route::middleware('auth:sanctum')->post('/update-profile', [AuthController::class,'updateProfile']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/forgot-password', [AuthController::class, 'sendEmail']);
 Route::post('/change-password', [AuthController::class, 'change_password']);
-// Route::group(['middleware' => 'auth:api'], function () {
- 
-// });
+Route::middleware('auth:sanctum')->post('/subscribe', [SubscribeController::class, 'subScribe']);
