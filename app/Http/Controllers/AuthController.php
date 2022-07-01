@@ -16,6 +16,9 @@ use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Exception;
 use Illuminate\Mail\Message;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\SendMailable;
+
 
 class AuthController extends Controller
 {
@@ -49,6 +52,8 @@ class AuthController extends Controller
 
         $user = User::where('email', $request['email'])->firstOrFail();
         $token = $user->createToken('authToken')->plainTextToken;
+
+        Mail::to($request->input('email'))->send(new SendMailable($user->first_name));
 
         return response()->json([
             'access_token' => $token,
