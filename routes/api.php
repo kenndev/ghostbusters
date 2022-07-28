@@ -27,6 +27,6 @@ Route::get('/', function(){
 Route::post('/register',[AuthController::class,'register']);
 Route::middleware('auth:sanctum')->post('/update-profile', [AuthController::class,'updateProfile']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/forgot-password', [AuthController::class, 'sendEmail']);
+Route::post('/forgot-password', [AuthController::class, 'store']);
 Route::post('/change-password', [AuthController::class, 'change_password']);
 Route::middleware('auth:sanctum')->post('/subscribe', [SubscribeController::class, 'subScribe']);

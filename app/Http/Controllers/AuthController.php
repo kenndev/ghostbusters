@@ -6,6 +6,7 @@ use App\Http\Requests\Login;
 use App\Http\Requests\updateProfile;
 use App\Http\Requests\UserRequest;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
@@ -53,7 +54,7 @@ class AuthController extends Controller
         $user = User::where('email', $request['email'])->firstOrFail();
         $token = $user->createToken('authToken')->plainTextToken;
 
-        Mail::to($request->input('email'))->send(new SendMailable($user->first_name));
+        //Mail::to($request->input('email'))->send(new SendMailable($user->first_name));
 
         return response()->json([
             'access_token' => $token,
@@ -142,13 +143,34 @@ class AuthController extends Controller
         );
 
         return $status === Password::RESET_LINK_SENT
-            ?response()->json([
+            ? response()->json([
                 'status'        => __($status),
             ], 401)
             : response()->json([
                 'status'        => __($status),
             ], 401);
+    }
 
-            
+    public function store(Request $request)
+    {
+        $request->validate([
+            'email' => ['required', 'email'],
+        ]);
+
+        // We will send the password reset link to this user. Once we have attempted
+        // to send the link, we will examine the response then see the message we
+        // need to show to the user. Finally, we'll send out a proper response.
+        // var_dump("Kenn");
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        if ($status != Password::RESET_LINK_SENT) {
+            throw ValidationException::withMessages([
+                'email' => [__($status)],
+            ]);
+        }
+
+        return response()->json(['status' => __($status)]);
     }
 }
